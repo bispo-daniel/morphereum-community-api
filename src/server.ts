@@ -89,10 +89,7 @@ app.use(slowDown(speedLimiter));
 app.use(rateLimit(limiter));
 app.use(
   cors({
-    origin: [
-      'https://localhost:5173',
-      'https://morphereum-community.netlify.app',
-    ],
+    origin: ['https://localhost:5173', 'https://morphereum.netlify.app'],
   })
 );
 app.use(express.json());

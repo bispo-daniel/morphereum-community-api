@@ -26,7 +26,7 @@ const isHttps = env.NODE_ENV === 'development';
 // 3° minuto: O rate-limit permite mais 10 requisições, completando o limite de 100 a cada 10 minutos.
 // A partir daí até o final do 10° minuto, o rate-limit impede que mais requisições sejam feitas até o período de 10 minutos se renovar.
 
-// Aplica atraso progressivo após 30 requisições dentro de 1 minuto.
+// Aplica atraso progressivo após 150 requisições dentro de 1 minuto.
 const speedLimiter: Partial<SlowDownOptions> = {
   windowMs: 1 * 60 * 1000,
   delayAfter: 150,

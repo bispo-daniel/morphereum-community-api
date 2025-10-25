@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import sharp from 'sharp';
 
-import { endResponseWithCode } from '@/utils/http.js';
+import { badRequest, internalServerError } from '@/utils/http.js';
 
 const storage = multer.memoryStorage();
 
@@ -24,9 +24,9 @@ const imageHandler = async (
   next: NextFunction
 ) => {
   upload(req, res, async function (err) {
-    if (err) return endResponseWithCode(res, 400);
+    if (err) return badRequest(res);
 
-    if (!req.file) return endResponseWithCode(res, 400);
+    if (!req.file) return badRequest(res);
 
     try {
       const compressedImage = await sharp(req.file.buffer)
@@ -37,7 +37,7 @@ const imageHandler = async (
       req.file.buffer = compressedImage;
       next();
     } catch (_error) {
-      return endResponseWithCode(res, 500);
+      return internalServerError(res);
     }
   });
 };

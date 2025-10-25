@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 
 import { register } from '@/services/arts/registerArt.js';
-import { endResponseWithCode, internalServerError } from '@/utils/http.js';
+import { badRequest, ok, internalServerError } from '@/utils/http.js';
 import logError from '@/utils/logError.js';
 import { publishFlush } from '@/messaging/publish.js';
 
@@ -19,7 +19,7 @@ const registerArt = async (req: Request, res: Response) => {
         error: 'Missing image file',
       });
 
-      return endResponseWithCode(res, 400);
+      return badRequest(res);
     }
 
     if (!creator || !xProfile || !description) {
@@ -29,7 +29,7 @@ const registerArt = async (req: Request, res: Response) => {
         error: `Missing required fields: ${{ creator, xProfile, description }}`,
       });
 
-      return endResponseWithCode(res, 400);
+      return badRequest(res);
     }
 
     await register({ creator, xProfile, description, imageName, imageFile });
@@ -40,7 +40,7 @@ const registerArt = async (req: Request, res: Response) => {
       console.warn('[rabbitmq] --> failed to publish arts.flush', e);
     }
 
-    endResponseWithCode(res, 201);
+    return ok(res);
   } catch (error) {
     logError({
       type: 'internal-server-error',
@@ -48,7 +48,7 @@ const registerArt = async (req: Request, res: Response) => {
       error,
     });
 
-    internalServerError(res);
+    return internalServerError(res);
   }
 };
 

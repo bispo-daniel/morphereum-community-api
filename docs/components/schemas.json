@@ -1,0 +1,234 @@
+{
+  "components": {
+    "schemas": {
+      "TokenData": {
+        "type": "object",
+        "properties": {
+          "tokenPriceInUSD": { "type": "string", "example": "$0.01234" },
+          "volumeIn24H": { "type": "string", "example": "$1.2M" },
+          "changeIn1H": { "type": "string", "example": "+0.54%" },
+          "changeIn24H": { "type": "string", "example": "-2.10%" },
+          "marketCap": { "type": "string", "example": "12M" },
+          "buy24H": { "type": "string", "example": "1.2K" },
+          "sell24H": { "type": "string", "example": "980" },
+          "transactions24H": { "type": "string", "example": "2.1K" },
+          "totalSupply": { "type": "string", "example": "420M" },
+          "holders": { "type": "integer", "example": 12345 }
+        },
+        "required": [
+          "tokenPriceInUSD",
+          "volumeIn24H",
+          "changeIn1H",
+          "changeIn24H",
+          "marketCap",
+          "buy24H",
+          "sell24H",
+          "transactions24H",
+          "totalSupply",
+          "holders"
+        ]
+      },
+
+      "Raid": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "format": "date-time" },
+          "platform": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "shareMessage": { "type": "string" },
+          "content": { "type": "string" }
+        },
+        "required": ["date", "platform", "url", "shareMessage", "content"]
+      },
+
+      "Link": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "label": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "icon": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["community-links", "official-links"]
+          }
+        },
+        "required": ["_id", "label", "url", "icon", "type"]
+      },
+
+      "ArtItem": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "approved": { "type": "boolean" },
+          "name": { "type": "string" },
+          "creator": { "type": "string" },
+          "xProfile": { "type": "string" },
+          "description": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "required": [
+          "_id",
+          "approved",
+          "name",
+          "creator",
+          "xProfile",
+          "description",
+          "url"
+        ]
+      },
+
+      "ArtsListResponse": {
+        "type": "object",
+        "properties": {
+          "arts": {
+            "type": "array",
+            "items": {
+              "$ref": "../components/schemas.json#/components/schemas/ArtItem"
+            }
+          },
+          "page": { "type": "integer", "minimum": 1 },
+          "next": { "type": "boolean" }
+        },
+        "required": ["arts", "page", "next"]
+      },
+
+      "DailyPoint": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "example": "15/01/2025" },
+          "count": { "type": "integer" }
+        },
+        "required": ["date", "count"]
+      },
+
+      "MetricsTimeSeries": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "highestCount": { "type": "integer" },
+          "daily": {
+            "type": "array",
+            "items": {
+              "$ref": "../components/schemas.json#/components/schemas/DailyPoint"
+            }
+          }
+        },
+        "required": ["total", "highestCount", "daily"]
+      },
+
+      "VisitsByCountry": {
+        "type": "object",
+        "properties": {
+          "highestCount": { "type": "integer" },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "country": { "type": "string" },
+                "count": { "type": "integer" }
+              },
+              "required": ["country", "count"]
+            }
+          }
+        },
+        "required": ["highestCount", "countries"]
+      },
+
+      "RaidsTrending": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "raids": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": { "type": "string", "example": "14/01/2025" },
+                "count": { "type": "integer" },
+                "platform": { "type": "string" }
+              },
+              "required": ["date", "count", "platform"]
+            }
+          }
+        },
+        "required": ["total", "raids"]
+      },
+
+      "LinksTrending": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "icon": { "type": "string" },
+                "count": { "type": "integer" }
+              },
+              "required": ["label", "icon", "count"]
+            }
+          }
+        },
+        "required": ["total", "links"]
+      },
+
+      "ArtsProducersNumbers": {
+        "type": "object",
+        "properties": {
+          "producers": { "type": "integer" },
+          "arts": { "type": "integer" }
+        },
+        "required": ["producers", "arts"]
+      },
+
+      "ArtsProducersTrending": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "producers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "xProfile": { "type": "string" },
+                "creator": { "type": "string" },
+                "count": { "type": "integer" },
+                "approvedCount": { "type": "integer" }
+              },
+              "required": ["xProfile", "creator", "count", "approvedCount"]
+            }
+          }
+        },
+        "required": ["total", "producers"]
+      },
+
+      "RegisterVisitBody": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string" }
+        },
+        "required": ["country"]
+      },
+
+      "RegisterLinkAccessBody": {
+        "type": "object",
+        "properties": {
+          "linkId": { "type": "string" }
+        },
+        "required": ["linkId"]
+      },
+
+      "RegisterArtSubmissionBody": {
+        "type": "object",
+        "properties": {
+          "xProfile": { "type": "string" }
+        },
+        "required": ["xProfile"]
+      }
+    }
+  }
+}

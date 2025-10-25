@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Top raid accesses",
+    "operationId": "getRaidAccessTrending",
+    "responses": {
+      "200": {
+        "description": "Top 10 raids by date",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/RaidsTrending"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "post": {
+    "tags": ["Metrics"],
+    "summary": "Register user chat message",
+    "operationId": "registerChatMessage",
+    "responses": {
+      "200": {
+        "$ref": "../../../components/responses.json#/components/responses/Empty200"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  },
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "User chat messages time series (7 days, until yesterday)",
+    "operationId": "getChatMessagesMetrics",
+    "responses": {
+      "200": {
+        "description": "Time series of user chat messages",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/MetricsTimeSeries"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

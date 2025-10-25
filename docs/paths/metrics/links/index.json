@@ -1,0 +1,51 @@
+{
+  "post": {
+    "tags": ["Metrics"],
+    "summary": "Register link access",
+    "operationId": "registerLinkAccess",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "../../../components/schemas.json#/components/schemas/RegisterLinkAccessBody"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "$ref": "../../../components/responses.json#/components/responses/Empty200"
+      },
+      "400": {
+        "$ref": "../../../components/responses.json#/components/responses/BadRequest"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  },
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Get link access metrics (7 days, until yesterday)",
+    "operationId": "getLinksAccessMetrics",
+    "responses": {
+      "200": {
+        "description": "Time series of link access",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/MetricsTimeSeries"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

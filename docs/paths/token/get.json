@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Token"],
+    "summary": "Get token",
+    "operationId": "getToken",
+    "responses": {
+      "200": {
+        "description": "Token data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../components/schemas.json#/components/schemas/TokenData"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

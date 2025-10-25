@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Country distribution (visits)",
+    "operationId": "getVisitsByCountry",
+    "responses": {
+      "200": {
+        "description": "Countries and counts",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/VisitsByCountry"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

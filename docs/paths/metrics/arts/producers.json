@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Total arts producers and approved arts",
+    "operationId": "getArtsProducersNumber",
+    "responses": {
+      "200": {
+        "description": "Totals of arts producers and approved arts",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/ArtsProducersNumbers"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

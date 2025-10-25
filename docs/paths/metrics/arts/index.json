@@ -1,0 +1,51 @@
+{
+  "post": {
+    "tags": ["Metrics"],
+    "summary": "Register art submission metric",
+    "operationId": "registerArtSubmissionMetric",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "../../../components/schemas.json#/components/schemas/RegisterArtSubmissionBody"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "$ref": "../../../components/responses.json#/components/responses/Empty200"
+      },
+      "400": {
+        "$ref": "../../../components/responses.json#/components/responses/BadRequest"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  },
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Art submission time series (7 days, until yesterday)",
+    "operationId": "getArtsSubmissionMetrics",
+    "responses": {
+      "200": {
+        "description": "Time series of art submission metrics",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/MetricsTimeSeries"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

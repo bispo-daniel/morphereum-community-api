@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Raid"],
+    "summary": "Get today's raid (UTC)",
+    "operationId": "getRaid",
+    "responses": {
+      "200": {
+        "description": "Today's raid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../components/schemas.json#/components/schemas/Raid"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

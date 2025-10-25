@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Most Accessed Links",
+    "operationId": "getLinksAccessTrending",
+    "responses": {
+      "200": {
+        "description": "Top 10 links",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/LinksTrending"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

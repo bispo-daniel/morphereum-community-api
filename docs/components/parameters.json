@@ -1,0 +1,13 @@
+{
+  "components": {
+    "parameters": {
+      "PageQuery": {
+        "name": "page",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "integer", "minimum": 1, "example": 1 },
+        "description": "Page (10 items/page)"
+      }
+    }
+  }
+}

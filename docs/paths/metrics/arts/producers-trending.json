@@ -1,0 +1,25 @@
+{
+  "get": {
+    "tags": ["Metrics"],
+    "summary": "Top arts producers",
+    "operationId": "getArtsProducersTrending",
+    "responses": {
+      "200": {
+        "description": "Top 10 arts producers",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../../components/schemas.json#/components/schemas/ArtsProducersTrending"
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

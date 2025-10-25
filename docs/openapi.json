@@ -1,0 +1,140 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Morphereum Community API — Docs",
+    "version": "1.0.0",
+    "description": "Public API for token data, daily raid, curated links, community artworks, and engagement metrics. The base path is served via `servers.url = /api`. The codebase is the single source of truth for this contract."
+  },
+  "servers": [
+    { "url": "https://localhost:3000/api", "description": "development" },
+    {
+      "url": "https://morphereum-community-api.onrender.com/api",
+      "description": "production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Token",
+      "description": "Formatted token data (CoinMarketCap DEX)."
+    },
+    {
+      "name": "Raid",
+      "description": "Daily raid."
+    },
+    {
+      "name": "Links",
+      "description": "Official and community links."
+    },
+    {
+      "name": "Arts",
+      "description": "Gallery and artwork submission."
+    },
+    {
+      "name": "Metrics",
+      "description": "Metrics for visits, raids, links, chat, and arts (7-day time series)."
+    }
+  ],
+  "components": {
+    "schemas": {
+      "TokenData": {
+        "$ref": "./components/schemas.json#/components/schemas/TokenData"
+      },
+      "Raid": {
+        "$ref": "./components/schemas.json#/components/schemas/Raid"
+      },
+      "Link": {
+        "$ref": "./components/schemas.json#/components/schemas/Link"
+      },
+      "ArtItem": {
+        "$ref": "./components/schemas.json#/components/schemas/ArtItem"
+      },
+      "ArtsListResponse": {
+        "$ref": "./components/schemas.json#/components/schemas/ArtsListResponse"
+      },
+      "DailyPoint": {
+        "$ref": "./components/schemas.json#/components/schemas/DailyPoint"
+      },
+      "MetricsTimeSeries": {
+        "$ref": "./components/schemas.json#/components/schemas/MetricsTimeSeries"
+      },
+      "VisitsByCountry": {
+        "$ref": "./components/schemas.json#/components/schemas/VisitsByCountry"
+      },
+      "RaidsTrending": {
+        "$ref": "./components/schemas.json#/components/schemas/RaidsTrending"
+      },
+      "LinksTrending": {
+        "$ref": "./components/schemas.json#/components/schemas/LinksTrending"
+      },
+      "ArtsProducersNumbers": {
+        "$ref": "./components/schemas.json#/components/schemas/ArtsProducersNumbers"
+      },
+      "ArtsProducersTrending": {
+        "$ref": "./components/schemas.json#/components/schemas/ArtsProducersTrending"
+      },
+      "RegisterVisitBody": {
+        "$ref": "./components/schemas.json#/components/schemas/RegisterVisitBody"
+      },
+      "RegisterLinkAccessBody": {
+        "$ref": "./components/schemas.json#/components/schemas/RegisterLinkAccessBody"
+      },
+      "RegisterArtSubmissionBody": {
+        "$ref": "./components/schemas.json#/components/schemas/RegisterArtSubmissionBody"
+      }
+    },
+    "responses": {
+      "$ref": "./components/responses.json"
+    },
+    "parameters": {
+      "$ref": "./components/parameters.json"
+    }
+  },
+  "paths": {
+    "/token": {
+      "$ref": "./paths/token/get.json"
+    },
+    "/raid": {
+      "$ref": "./paths/raid/get.json"
+    },
+    "/links": {
+      "$ref": "./paths/links/get.json"
+    },
+    "/arts": {
+      "$ref": "./paths/arts/index.json"
+    },
+    "/metrics/visits": {
+      "$ref": "./paths/metrics/visits/index.json"
+    },
+    "/metrics/visits/countries": {
+      "$ref": "./paths/metrics/visits/countries.json"
+    },
+    "/metrics/raids": {
+      "$ref": "./paths/metrics/raids/index.json"
+    },
+    "/metrics/raids/trending": {
+      "$ref": "./paths/metrics/raids/trending.json"
+    },
+    "/metrics/links": {
+      "$ref": "./paths/metrics/links/index.json"
+    },
+    "/metrics/links/trending": {
+      "$ref": "./paths/metrics/links/trending.json"
+    },
+    "/metrics/chat": {
+      "$ref": "./paths/metrics/chat/index.json"
+    },
+    "/metrics/chat/raid-message": {
+      "$ref": "./paths/metrics/chat/raid-message.json"
+    },
+    "/metrics/arts": {
+      "$ref": "./paths/metrics/arts/index.json"
+    },
+    "/metrics/arts/producers": {
+      "$ref": "./paths/metrics/arts/producers.json"
+    },
+    "/metrics/arts/producers/trending": {
+      "$ref": "./paths/metrics/arts/producers-trending.json"
+    }
+  },
+  "security": [{ "bearerAuth": [] }]
+}

@@ -1,0 +1,28 @@
+{
+  "get": {
+    "tags": ["Links"],
+    "summary": "Get links",
+    "operationId": "getLinks",
+    "responses": {
+      "200": {
+        "description": "List of links",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "../../components/schemas.json#/components/schemas/Link"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "$ref": "../../components/responses.json#/components/responses/NotFound"
+      },
+      "500": {
+        "$ref": "../../components/responses.json#/components/responses/InternalServerError"
+      }
+    }
+  }
+}

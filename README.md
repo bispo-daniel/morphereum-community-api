@@ -183,6 +183,61 @@ The OpenAPI specification is **fully modular** and stored as JSON files inside `
 
 ---
 
+## 🔁 Cross-API Cache Invalidation (RabbitMQ / CloudAMQP)
+
+**Why messaging?**
+Instead of using HTTP callbacks between services, this project uses **RabbitMQ (CloudAMQP – Little Lemur)** to practice message-driven patterns and ensure consistent cache invalidation between APIs.
+
+## Summary
+
+* **Goal:** keep in-memory caches synchronized between the **Community API** and the **Admin API**.
+* **Approach:** both APIs share a common topic exchange (`cache.flush`).
+
+  * The **Admin API** publishes events when data changes.
+  * The **Community API** listens to those events and clears its caches accordingly.
+* **Broker:** RabbitMQ via CloudAMQP.
+* **Exchange:** topic exchange dedicated to cache-flush events.
+* **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
+* **Message payload:** includes the event type, timestamp, and a `source` identifier, allowing each API to ignore its own messages if needed.
+
+## Publishers (Senders)
+
+This API publishes **only one event type**:
+
+* **Arts:** when a new art submission is registered (`POST /arts`), this service clears its own cache and **publishes `arts.flush`** to notify the Admin API and any other subscribers.
+
+All other mutation events (links, raids, etc.) originate from the Admin API.
+
+## Consumer (Listener)
+
+* **Bindings:** listens to `arts.flush`, `links.flush`, and `raids.flush`.
+* **Effect:** when an event is received, the corresponding NodeCache entries are cleared (`artsData`, `linksData`, `raidData`).
+* **Self-skip:** messages published by this same service (identified by the `source` field) are safely ignored to avoid redundant flushes.
+
+## Environment & Conventions
+
+* **Broker URL:** provided via environment variable `RABBITMQ_URL` (CloudAMQP connection string).
+* **Exchange name:** `cache.flush` (type: topic).
+* **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
+* **Delivery semantics:** lightweight, fire-and-forget notifications; duplicate deliveries are harmless since cache clears are idempotent.
+
+## Operational Notes
+
+* **Startup:** the RabbitMQ consumer is initialized on boot and remains subscribed to the exchange.
+* **Observability:** monitor queue and routing activity via the CloudAMQP dashboard.
+* **Failure behavior:** if the broker is down, local caches are still invalidated; remote APIs update once connectivity returns (eventual consistency).
+* **Security:** keep broker credentials private; use per-environment CloudAMQP URLs.
+* **Performance:** payloads are small and processing is near-instant.
+
+## Quick Checklist
+
+* Confirm `RABBITMQ_URL` and `cache.flush` exchange are set in environment variables.
+* Verify this service **publishes only `arts.flush`** on art submission.
+* Ensure listeners are active for all three routing keys (`arts.flush`, `links.flush`, `raids.flush`).
+* Check that cache clearing is idempotent and consistent across both APIs.
+
+---
+
 ## 🗂️ Data Models (MongoDB via Mongoose)
 
 - **Raid**: `{ date: Date, platform: string, url: string, shareMessage: string, content: string }`

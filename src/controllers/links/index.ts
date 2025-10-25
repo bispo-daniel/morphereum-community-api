@@ -1,14 +1,10 @@
 import { type Request, type Response } from 'express';
-import NodeCache from 'node-cache';
 
+import { linksCache } from '@/cache/index.js';
 import type { Links } from '@/models/links/index.js';
 import { linksData } from '@/services/links/index.js';
-import { getEndOfDayTTL } from '@/utils/getEndOfDayTTL.js';
 import { internalServerError, notFound, sendJson } from '@/utils/http.js';
 import logError from '@/utils/logError.js';
-
-const linksTTL = getEndOfDayTTL();
-const linksCache = new NodeCache({ stdTTL: linksTTL });
 
 const getLinks = async (_req: Request, res: Response) => {
   const cacheKey = 'linksData';

@@ -3,6 +3,7 @@ import { type Request, type Response } from 'express';
 import { register } from '@/services/arts/registerArt.js';
 import { endResponseWithCode, internalServerError } from '@/utils/http.js';
 import logError from '@/utils/logError.js';
+import { publishFlush } from '@/messaging/publish.js';
 
 const registerArt = async (req: Request, res: Response) => {
   try {
@@ -32,6 +33,12 @@ const registerArt = async (req: Request, res: Response) => {
     }
 
     await register({ creator, xProfile, description, imageName, imageFile });
+
+    try {
+      await publishFlush('arts');
+    } catch (e) {
+      console.warn('[rabbitmq] --> failed to publish arts.flush', e);
+    }
 
     endResponseWithCode(res, 201);
   } catch (error) {

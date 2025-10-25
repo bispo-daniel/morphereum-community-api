@@ -1,6 +1,7 @@
+import { env } from '@/config/index.js';
 import { ArtsModel, ArtsSchema } from '@/models/arts/index.js';
 
-const RECORDS_PER_PAGE = 20;
+const RECORDS_PER_PAGE = env.ART_RECORDS_PER_PAGE;
 
 export const artsData = async ({ page }: { page: number }) => {
   const skip = (page - 1) * RECORDS_PER_PAGE;

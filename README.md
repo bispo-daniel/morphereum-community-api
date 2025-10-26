@@ -146,30 +146,31 @@ All endpoints return `404` when no data is found for the requested aggregation w
 
 ## 📚 API Documentation (Swagger / OpenAPI)
 
-* **Swagger UI** is served at: `http(s)://localhost:<PORT>/docs` (automatically mounted by the server).
-* **Raw OpenAPI JSON**: `http(s)://localhost:<PORT>/openapi/openapi.json`
+- **Swagger UI** is served at: `http(s)://localhost:<PORT>/docs` (automatically mounted by the server).
+- **Raw OpenAPI JSON**: `http(s)://localhost:<PORT>/openapi/openapi.json`
   Both routes are registered in `src/server.ts` using **swagger-ui-express** and a static mount of the `docs/` directory.
 
 ### How it’s organized
 
 The OpenAPI specification is **fully modular** and stored as JSON files inside `docs/`:
 
-* `docs/openapi.json` – root spec that composes all other definitions.
-* `docs/components/` – reusable **schemas**, **responses**, and **parameters**.
+- `docs/openapi.json` – root spec that composes all other definitions.
+- `docs/components/` – reusable **schemas**, **responses**, and **parameters**.
 
-  * Schemas include: **Token**, **Raid**, **Link**, **ArtItem**, and all **metrics** models (e.g., visits, links, raids, chat, arts).
-  * Responses define empty-body patterns for success and errors (`Empty200`, `BadRequest`, `NotFound`, etc.).
-  * Common query and path parameters (e.g., `Page` for pagination).
-* `docs/paths/**` – individual route operation files (Token, Raid, Links, Arts, Metrics).
+  - Schemas include: **Token**, **Raid**, **Link**, **ArtItem**, and all **metrics** models (e.g., visits, links, raids, chat, arts).
+  - Responses define empty-body patterns for success and errors (`Empty200`, `BadRequest`, `NotFound`, etc.).
+  - Common query and path parameters (e.g., `Page` for pagination).
+
+- `docs/paths/**` – individual route operation files (Token, Raid, Links, Arts, Metrics).
   Each operation references shared components through `$ref`.
 
 ### Design notes
 
-* **Public by design** — `/docs` and `/openapi` are intentionally exposed in production to simplify integration and testing.
+- **Public by design** — `/docs` and `/openapi` are intentionally exposed in production to simplify integration and testing.
   Only the documentation endpoints are public; all API resources remain protected as defined.
-* **No build step needed** — the JSON specs are read directly by Swagger UI. Any edit to `docs/**/*.json` is instantly reflected on reload.
-* Responses that return no body (e.g., `400`, `404`, `500`) are explicitly modeled as “empty” to mirror real runtime behavior.
-* Consistent naming and `$ref` usage ensure parity with the Admin API structure.
+- **No build step needed** — the JSON specs are read directly by Swagger UI. Any edit to `docs/**/*.json` is instantly reflected on reload.
+- Responses that return no body (e.g., `400`, `404`, `500`) are explicitly modeled as “empty” to mirror real runtime behavior.
+- Consistent naming and `$ref` usage ensure parity with the Admin API structure.
 
 ### How to update
 
@@ -190,51 +191,52 @@ Instead of using HTTP callbacks between services, this project uses **RabbitMQ (
 
 ## Summary
 
-* **Goal:** keep in-memory caches synchronized between the **Community API** and the **Admin API**.
-* **Approach:** both APIs share a common topic exchange (`cache.flush`).
+- **Goal:** keep in-memory caches synchronized between the **Community API** and the **Admin API**.
+- **Approach:** both APIs share a common topic exchange (`cache.flush`).
 
-  * The **Admin API** publishes events when data changes.
-  * The **Community API** listens to those events and clears its caches accordingly.
-* **Broker:** RabbitMQ via CloudAMQP.
-* **Exchange:** topic exchange dedicated to cache-flush events.
-* **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
-* **Message payload:** includes the event type, timestamp, and a `source` identifier, allowing each API to ignore its own messages if needed.
+  - The **Admin API** publishes events when data changes.
+  - The **Community API** listens to those events and clears its caches accordingly.
+
+- **Broker:** RabbitMQ via CloudAMQP.
+- **Exchange:** topic exchange dedicated to cache-flush events.
+- **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
+- **Message payload:** includes the event type, timestamp, and a `source` identifier, allowing each API to ignore its own messages if needed.
 
 ## Publishers (Senders)
 
 This API publishes **only one event type**:
 
-* **Arts:** when a new art submission is registered (`POST /arts`), this service clears its own cache and **publishes `arts.flush`** to notify the Admin API and any other subscribers.
+- **Arts:** when a new art submission is registered (`POST /arts`), this service clears its own cache and **publishes `arts.flush`** to notify the Admin API and any other subscribers.
 
 All other mutation events (links, raids, etc.) originate from the Admin API.
 
 ## Consumer (Listener)
 
-* **Bindings:** listens to `arts.flush`, `links.flush`, and `raids.flush`.
-* **Effect:** when an event is received, the corresponding NodeCache entries are cleared (`artsData`, `linksData`, `raidData`).
-* **Self-skip:** messages published by this same service (identified by the `source` field) are safely ignored to avoid redundant flushes.
+- **Bindings:** listens to `arts.flush`, `links.flush`, and `raids.flush`.
+- **Effect:** when an event is received, the corresponding NodeCache entries are cleared (`artsData`, `linksData`, `raidData`).
+- **Self-skip:** messages published by this same service (identified by the `source` field) are safely ignored to avoid redundant flushes.
 
 ## Environment & Conventions
 
-* **Broker URL:** provided via environment variable `RABBITMQ_URL` (CloudAMQP connection string).
-* **Exchange name:** `cache.flush` (type: topic).
-* **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
-* **Delivery semantics:** lightweight, fire-and-forget notifications; duplicate deliveries are harmless since cache clears are idempotent.
+- **Broker URL:** provided via environment variable `RABBITMQ_URL` (CloudAMQP connection string).
+- **Exchange name:** `cache.flush` (type: topic).
+- **Routing keys:** `arts.flush`, `links.flush`, `raids.flush`.
+- **Delivery semantics:** lightweight, fire-and-forget notifications; duplicate deliveries are harmless since cache clears are idempotent.
 
 ## Operational Notes
 
-* **Startup:** the RabbitMQ consumer is initialized on boot and remains subscribed to the exchange.
-* **Observability:** monitor queue and routing activity via the CloudAMQP dashboard.
-* **Failure behavior:** if the broker is down, local caches are still invalidated; remote APIs update once connectivity returns (eventual consistency).
-* **Security:** keep broker credentials private; use per-environment CloudAMQP URLs.
-* **Performance:** payloads are small and processing is near-instant.
+- **Startup:** the RabbitMQ consumer is initialized on boot and remains subscribed to the exchange.
+- **Observability:** monitor queue and routing activity via the CloudAMQP dashboard.
+- **Failure behavior:** if the broker is down, local caches are still invalidated; remote APIs update once connectivity returns (eventual consistency).
+- **Security:** keep broker credentials private; use per-environment CloudAMQP URLs.
+- **Performance:** payloads are small and processing is near-instant.
 
 ## Quick Checklist
 
-* Confirm `RABBITMQ_URL` and `cache.flush` exchange are set in environment variables.
-* Verify this service **publishes only `arts.flush`** on art submission.
-* Ensure listeners are active for all three routing keys (`arts.flush`, `links.flush`, `raids.flush`).
-* Check that cache clearing is idempotent and consistent across both APIs.
+- Confirm `RABBITMQ_URL` and `cache.flush` exchange are set in environment variables.
+- Verify this service **publishes only `arts.flush`** on art submission.
+- Ensure listeners are active for all three routing keys (`arts.flush`, `links.flush`, `raids.flush`).
+- Check that cache clearing is idempotent and consistent across both APIs.
 
 ---
 
@@ -242,9 +244,9 @@ All other mutation events (links, raids, etc.) originate from the Admin API.
 
 This API ships with **Sentry** for runtime error tracking, **performance traces (APM)** and optional **CPU profiling**.
 
-* **Where it’s wired:** initialization + process handlers live in `src/observability/sentry.ts`, and are mounted in `src/server.ts` (initialized **before** routes and the error handler attached **after** the router). 
-* **What we capture:** Express errors (via `Sentry.setupExpressErrorHandler`), HTTP spans, unhandled rejections and uncaught exceptions. 
-* **Packages:** `@sentry/node` and `@sentry/profiling-node`. 
+- **Where it’s wired:** initialization + process handlers live in `src/observability/sentry.ts`, and are mounted in `src/server.ts` (initialized **before** routes and the error handler attached **after** the router).
+- **What we capture:** Express errors (via `Sentry.setupExpressErrorHandler`), HTTP spans, unhandled rejections and uncaught exceptions.
+- **Packages:** `@sentry/node` and `@sentry/profiling-node`.
 
 ### Configuration
 
@@ -257,15 +259,15 @@ SENTRY_TRACES_SAMPLE_RATE=0.1     # 0.1 (APM)
 SENTRY_PROFILES_SAMPLE_RATE=0.1   # 0.1 (CPU profiling)
 ```
 
-If `SENTRY_DSN` is blank, Sentry is **skipped** (boot logs a warning). Default sample rates fall back to `0` when not set. 
+If `SENTRY_DSN` is blank, Sentry is **skipped** (boot logs a warning). Default sample rates fall back to `0` when not set.
 
 ### How it works
 
-* **`setupSentry(app)`**: initializes Sentry **before** routes with HTTP + Express integrations, **tracing (APM)** and **CPU profiling** via `@sentry/profiling-node`.
-* **`wireProcessHandlers()`**: forwards `unhandledRejection` and `uncaughtException` to Sentry.
-* **`attachSentryErrorHandler(app)`**: installs Sentry’s Express error middleware **after** the router.
+- **`setupSentry(app)`**: initializes Sentry **before** routes with HTTP + Express integrations, **tracing (APM)** and **CPU profiling** via `@sentry/profiling-node`.
+- **`wireProcessHandlers()`**: forwards `unhandledRejection` and `uncaughtException` to Sentry.
+- **`attachSentryErrorHandler(app)`**: installs Sentry’s Express error middleware **after** the router.
 
-> Tip: start with low sample rates in production (e.g., `0.1`) and adjust as needed. 
+> Tip: start with low sample rates in production (e.g., `0.1`) and adjust as needed.
 
 ---
 

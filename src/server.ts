@@ -1,3 +1,4 @@
+import '@sentry/node';
 import http from 'http';
 import https from 'https';
 import express from 'express';
@@ -15,9 +16,13 @@ import {
   logger,
   rateLimiter,
   speedLimiter,
-} from './middlewares/index.js';
-
-import { getEndOfDayTTL } from './utils/getEndOfDayTTL.js';
+} from '@/middlewares/index.js';
+import {
+  setupSentry,
+  attachSentryErrorHandler,
+  wireProcessHandlers,
+} from '@/observability/sentry.js';
+import { getEndOfDayTTL } from '@/utils/getEndOfDayTTL.js';
 
 const isHttps = env.NODE_ENV === 'development';
 
@@ -25,6 +30,9 @@ const app = express();
 const server = isHttps
   ? https.createServer({ ...cert }, app)
   : http.createServer(app);
+
+setupSentry(app);
+wireProcessHandlers();
 
 app.set('trust proxy', true);
 app.use(logger());
@@ -34,6 +42,7 @@ app.use(rateLimiter());
 app.use(jsonParser());
 app.use(docs());
 app.use('/api', router);
+attachSentryErrorHandler(app);
 
 connectToMongoDb();
 

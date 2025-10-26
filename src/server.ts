@@ -1,13 +1,12 @@
 import '@sentry/node';
 import http from 'http';
 import https from 'https';
+
 import express from 'express';
 
 import '@/utils/log.js';
 import { cert } from '@/config/cert.js';
 import { env } from '@/config/index.js';
-import { router } from '@/router/index.js';
-import { connectToMongoDb } from '@/utils/connectToMongoDb.js';
 import { startCacheInvalidationConsumer } from '@/messaging/cacheInvalidationConsumer.js';
 import {
   cors,
@@ -18,10 +17,12 @@ import {
   speedLimiter,
 } from '@/middlewares/index.js';
 import {
-  setupSentry,
   attachSentryErrorHandler,
+  setupSentry,
   wireProcessHandlers,
 } from '@/observability/sentry.js';
+import { router } from '@/router/index.js';
+import { connectToMongoDb } from '@/utils/connectToMongoDb.js';
 import { getEndOfDayTTL } from '@/utils/getEndOfDayTTL.js';
 
 const isHttps = env.NODE_ENV === 'development';

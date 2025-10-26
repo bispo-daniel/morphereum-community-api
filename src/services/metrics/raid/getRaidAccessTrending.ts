@@ -1,6 +1,7 @@
+import { format } from 'date-fns';
+
 import { RaidMetricsModel } from '@/models/metrics/raid.js';
 import { RaidModel } from '@/models/raid/index.js';
-import { format } from 'date-fns';
 
 const get = async () => {
   const metrics = await RaidMetricsModel.aggregate([

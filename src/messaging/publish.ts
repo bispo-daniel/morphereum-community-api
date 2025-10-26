@@ -1,5 +1,6 @@
-import { getChannel } from './rabbit.js';
 import { env } from '@/config/index.js';
+
+import { getChannel } from './rabbit.js';
 
 type FlushTopic = 'arts' | 'links' | 'raids';
 

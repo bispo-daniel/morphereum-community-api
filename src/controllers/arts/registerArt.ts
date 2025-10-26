@@ -1,9 +1,9 @@
 import { type Request, type Response } from 'express';
 
-import { register } from '@/services/arts/registerArt.js';
-import { badRequest, ok, internalServerError } from '@/utils/http.js';
-import logError from '@/utils/logError.js';
 import { publishFlush } from '@/messaging/publish.js';
+import { register } from '@/services/arts/registerArt.js';
+import { badRequest, internalServerError, ok } from '@/utils/http.js';
+import logError from '@/utils/logError.js';
 
 const registerArt = async (req: Request, res: Response) => {
   try {

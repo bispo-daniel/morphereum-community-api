@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 
 import * as s from '@/services/metrics/raid/registerRaidAccess.js';
-import { ok, internalServerError } from '@/utils/http.js';
+import { internalServerError, ok } from '@/utils/http.js';
 import logError from '@/utils/logError.js';
 import { todayDate } from '@/utils/todayDate.js';
 

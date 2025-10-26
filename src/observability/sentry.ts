@@ -1,6 +1,6 @@
-import type { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import type { Application } from 'express';
 
 import { env } from '@/config/index.js';
 

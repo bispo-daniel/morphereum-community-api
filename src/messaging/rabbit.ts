@@ -1,5 +1,6 @@
 import { connect } from 'amqplib';
 import type { Channel, ChannelModel } from 'amqplib';
+
 import { env } from '@/config/index.js';
 
 let conn: ChannelModel | undefined;
